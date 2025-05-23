@@ -61,6 +61,16 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV = [0.0025, 0.1]
       ret.lateralTuning.pid.kiV = [0.00025, 0.01]
 
+    elif candidate == CAR.SUBARU_CROSSTREK_2024:
+      ret.dashcamOnly = False
+      ret.steerActuatorDelay = 0.3  # end-to-end angle controller
+      ret.lateralTuning.init('pid')
+      ret.lateralTuning.pid.kf = 0.00003
+      ret.lateralTuning.pid.kpBP = [0., 20.]
+      ret.lateralTuning.pid.kiBP = [0., 20.]
+      ret.lateralTuning.pid.kpV = [0.0025, 0.1]
+      ret.lateralTuning.pid.kiV = [0.00025, 0.01]
+
     elif candidate == CAR.SUBARU_IMPREZA:
       ret.steerActuatorDelay = 0.4  # end-to-end angle controller
       ret.lateralTuning.init('pid')
