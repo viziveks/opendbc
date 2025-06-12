@@ -146,6 +146,10 @@ class CAR(Platforms):
     [SubaruCarDocs("Subaru Crosstrek 2020-23", "All")],
     CarSpecs(mass=1836, wheelbase=2.7, steerRatio=13),
   )
+  SUBARU_CROSSTREK_NEW = SubaruPlatformConfig(
+    [SubaruCarDocs("Subaru Crosstrek 2024", "All")],
+    CarSpecs(mass=1529, wheelbase=2.665, steerRatio=13),
+  )
   SUBARU_LEGACY = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Legacy 2020-22", "All", car_parts=CarParts.common([CarHarness.subaru_b]))],
     SUBARU_OUTBACK.specs,
@@ -226,7 +230,7 @@ class CAR(Platforms):
   )
   SUBARU_CROSSTREK_2024 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
-    SUBARU_CROSSTREK.specs,
+    SUBARU_CROSSTREK_NEW.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
 
