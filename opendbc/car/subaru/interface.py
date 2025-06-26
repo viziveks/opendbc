@@ -77,9 +77,16 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.SUBARU_CROSSTREK_HYBRID:
       ret.steerActuatorDelay = 0.1
 
-    elif candidate == CAR.SUBARU_CROSSTREK_2025:
+    elif candidate == CAR.SUBARU_CROSSTREK_GEN_3:
       ret.dashcamOnly = False
       ret.steerActuatorDelay = 0.1  # end-to-end angle controller
+      # JW-TODO May need to remove this? Not sure
+      ret.lateralTuning.init('pid')
+      ret.lateralTuning.pid.kf = 0.00003
+      ret.lateralTuning.pid.kpBP = [0., 20.]
+      ret.lateralTuning.pid.kiBP = [0., 20.]
+      ret.lateralTuning.pid.kpV = [0.0025, 0.1]
+      ret.lateralTuning.pid.kiV = [0.00025, 0.01]
 
     elif candidate in (CAR.SUBARU_FORESTER, CAR.SUBARU_FORESTER_2022, CAR.SUBARU_FORESTER_HYBRID):
       ret.lateralTuning.init('pid')

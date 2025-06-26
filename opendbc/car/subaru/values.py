@@ -131,6 +131,15 @@ class SubaruGen2PlatformConfig(SubaruPlatformConfig):
     if not (self.flags & SubaruFlags.LKAS_ANGLE):
       self.flags |= SubaruFlags.STEER_RATE_LIMITED
 
+# I don't like the idea of using the wrong generation as the config
+# even if the inside of the constructor is the exact same
+@dataclass
+class SubaruGen3PlatformConfig(SubaruPlatformConfig):
+  def init(self):
+    super().init()
+    self.flags |= SubaruFlags.GLOBAL_GEN2
+    if not (self.flags & SubaruFlags.LKAS_ANGLE):
+      self.flags |= SubaruFlags.STEER_RATE_LIMITED
 
 class CAR(Platforms):
   # Global platform
@@ -230,12 +239,12 @@ class CAR(Platforms):
   )
   SUBARU_CROSSTREK_2024 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
-    SUBARU_CROSSTREK_3RD_GEN.specs,
+    SUBARU_CROSSTREK_GEN_3.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
   SUBARU_CROSSTREK_2025 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2025", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
-    SUBARU_CROSSTREK_3RD_GEN.specs,
+    SUBARU_CROSSTREK_GEN_3.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
 
