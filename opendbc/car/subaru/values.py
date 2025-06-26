@@ -169,6 +169,14 @@ class CAR(Platforms):
     CarSpecs(mass=1668, wheelbase=2.67, steerRatio=17),
     flags=SubaruFlags.HYBRID,
   )
+  SUBARU_CROSSTREK_GEN_2 = SubaruPlatformConfig(
+    [SubaruCarDocs("Subaru Crosstrek 2020-23", "All")],
+    CarSpecs(mass=1836, wheelbase=2.7, steerRatio=13),
+  )
+  SUBARU_CROSSTREK_GEN_3 = SubaruPlatformConfig(
+    [SubaruCarDocs("Subaru Crosstrek 2024-25", "All")],
+    CarSpecs(mass=1529, wheelbase=2.665, steerRatio=13),
+  )
   SUBARU_FORESTER = SubaruPlatformConfig(
     [SubaruCarDocs("Subaru Forester 2019-21", "All")],
     CarSpecs(mass=1568, wheelbase=2.67, steerRatio=17),
@@ -218,6 +226,16 @@ class CAR(Platforms):
   SUBARU_ASCENT_2023 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Ascent 2023", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
     SUBARU_ASCENT.specs,
+    flags=SubaruFlags.LKAS_ANGLE,
+  )
+  SUBARU_CROSSTREK_2024 = SubaruGen2PlatformConfig(
+    [SubaruCarDocs("Subaru Crosstrek 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
+    SUBARU_CROSSTREK_3RD_GEN.specs,
+    flags=SubaruFlags.LKAS_ANGLE,
+  )
+  SUBARU_CROSSTREK_2025 = SubaruGen2PlatformConfig(
+    [SubaruCarDocs("Subaru Crosstrek 2025", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
+    SUBARU_CROSSTREK_3RD_GEN.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
 

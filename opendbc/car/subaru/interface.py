@@ -77,6 +77,10 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.SUBARU_CROSSTREK_HYBRID:
       ret.steerActuatorDelay = 0.1
 
+    elif candidate == CAR.SUBARU_CROSSTREK_2025:
+      ret.dashcamOnly = False
+      ret.steerActuatorDelay = 0.1  # end-to-end angle controller
+
     elif candidate in (CAR.SUBARU_FORESTER, CAR.SUBARU_FORESTER_2022, CAR.SUBARU_FORESTER_HYBRID):
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kf = 0.000038
