@@ -34,6 +34,7 @@ class CarController(CarControllerBase):
     if (self.frame % self.p.STEER_STEP) == 0:
       apply_steer = 0
       apply_torque = 0
+      # If we're using an Angle instead of torque
       if self.CP.flags & SubaruFlags.LKAS_ANGLE:
         apply_steer = apply_std_steer_angle_limits(actuators.steeringAngleDeg, self.apply_steer_last, CS.out.vEgoRaw,
                                                    CS.out.steeringAngleDeg, CC.latActive, CarControllerParams.ANGLE_LIMITS)

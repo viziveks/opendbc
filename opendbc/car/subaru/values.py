@@ -148,7 +148,7 @@ class CAR(Platforms):
   )
   SUBARU_CROSSTREK_GEN_3 = SubaruPlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2024-25", "All")],
-    CarSpecs(mass=1529, wheelbase=2.665, steerRatio=13),
+    CarSpecs(mass=1529, wheelbase=2.665, steerRatio=13.5),
   )
   SUBARU_LEGACY = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Legacy 2020-22", "All", car_parts=CarParts.common([CarHarness.subaru_b]))],
@@ -231,12 +231,12 @@ class CAR(Platforms):
   SUBARU_CROSSTREK_2024 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
     SUBARU_CROSSTREK_GEN_3.specs,
-    flags=SubaruFlags.LKAS_ANGLE,
+    flags=[SubaruFlags.LKAS_ANGLE, SubaruFlags.STEER_RATE_LIMITED]
   )
   SUBARU_CROSSTREK_2025 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2025", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
     SUBARU_CROSSTREK_GEN_3.specs,
-    flags=SubaruFlags.LKAS_ANGLE,
+    flags=[SubaruFlags.LKAS_ANGLE, SubaruFlags.STEER_RATE_LIMITED]
   )
 
 SUBARU_VERSION_REQUEST = bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER]) + \
