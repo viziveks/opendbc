@@ -68,8 +68,8 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00003
       ret.lateralTuning.pid.kpBP = [0., 20.]
       ret.lateralTuning.pid.kiBP = [0., 20.]
-      ret.lateralTuning.pid.kpV = [0.0025, 0.1]
-      ret.lateralTuning.pid.kiV = [0.00025, 0.01]
+      ret.lateralTuning.pid.kpV = [0.0015, 0.08]  # slightly softer than before
+      ret.lateralTuning.pid.kiV = [0.0001, 0.008]  # soften here too
 
     elif candidate == CAR.SUBARU_IMPREZA:
       ret.steerActuatorDelay = 0.4  # end-to-end angle controller
