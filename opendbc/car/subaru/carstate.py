@@ -65,9 +65,10 @@ class CarState(CarStateBase):
     can_gear = int(cp_transmission.vl["Transmission"]["Gear"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
-    if self.CP.flags & SubaruFlags.LKAS_ANGLE:
+    # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
+    if True or self.CP.flags & SubaruFlags.LKAS_ANGLE:
       try:
-        ret.steeringAngleDeg = cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_OUTPUT"]
+        ret.steeringAngleDeg = cp_cam.vl["Steering"]["Steering_Angle"]
       except Exception as e:
         # I'm just not 100% sure if this is the right key. but don't want to crash if it doesn't exist
         pass
