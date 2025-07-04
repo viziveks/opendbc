@@ -77,6 +77,8 @@
   {.msg = {{MSG_SUBARU_Wheel_Speeds,    alt_bus,         8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},  \
   {.msg = {{MSG_SUBARU_Brake_Status,    alt_bus,         8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},  \
   {.msg = {{MSG_SUBARU_ES_DashStatus,   SUBARU_CAM_BUS,  8, .max_counter = 15U, .frequency = 20U}, { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_ES_LKAS_ANGLE,   SUBARU_CAM_BUS,  8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}}, \
+
 
 static bool subaru_gen2 = false;
 static bool subaru_longitudinal = false;
@@ -111,9 +113,19 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
     torque_driver_new = -1 * to_signed(torque_driver_new, 11);
     update_sample(&torque_driver, torque_driver_new);
 
-    int angle_meas_new = (GET_BYTES(to_push, 4, 2) & 0xFFFFU);
-    // convert Steering_Torque -> Steering_Angle to centidegrees, to match the ES_LKAS_ANGLE angle request units
-    angle_meas_new = ROUND(to_signed(angle_meas_new, 16) * -2.17);
+    // Only process steering angle from torque message for non-LKAS_ANGLE cars
+    if (!subaru_lkas_angle) {
+      int angle_meas_new = (GET_BYTES(to_push, 4, 2) & 0xFFFFU);
+      // convert Steering_Torque -> Steering_Angle to centidegrees, to match the ES_LKAS_ANGLE angle request units
+      angle_meas_new = ROUND(to_signed(angle_meas_new, 16) * -2.17);
+      update_sample(&angle_meas, angle_meas_new);
+    }
+  }
+
+  // Process steering angle from LKAS_ANGLE message for LKAS_ANGLE cars
+  if ((addr == MSG_SUBARU_ES_LKAS_ANGLE) && (bus == SUBARU_CAM_BUS) && subaru_lkas_angle) {
+    int angle_meas_new = GET_BYTES(to_push, 5, 3) & 0x1FFFFU;
+    angle_meas_new = -1 * to_signed(angle_meas_new, 17);
     update_sample(&angle_meas, angle_meas_new);
   }
 
@@ -151,7 +163,6 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
     gas_pressed = GET_BYTE(to_push, 4) != 0U;
   }
 }
-
 static bool subaru_tx_hook(const CANPacket_t *to_send) {
   const TorqueSteeringLimits SUBARU_STEERING_LIMITS      = SUBARU_STEERING_LIMITS_GENERATOR(2047, 50, 70);
   const TorqueSteeringLimits SUBARU_GEN2_STEERING_LIMITS = SUBARU_STEERING_LIMITS_GENERATOR(1000, 40, 40);
