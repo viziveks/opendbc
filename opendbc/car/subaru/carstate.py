@@ -65,7 +65,15 @@ class CarState(CarStateBase):
     can_gear = int(cp_transmission.vl["Transmission"]["Gear"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
-    ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
+    if self.CP.flags & SubaruFlags.LKAS_ANGLE:
+      try:
+        ret.steeringAngleDeg = cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_OUTPUT"]
+      except Exception as e:
+        # I'm just not 100% sure if this is the right key. but don't want to crash if it doesn't exist
+        pass
+    else:
+      ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
+
 
     if not (self.CP.flags & SubaruFlags.PREGLOBAL):
       # ideally we get this from the car, but unclear if it exists. diagnostic software doesn't even have it
