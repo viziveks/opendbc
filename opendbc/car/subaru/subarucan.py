@@ -21,6 +21,16 @@ def create_steering_control_angle(packer, apply_torque, steer_req):
   }
   return packer.make_can_msg("ES_LKAS_ANGLE", 0, values)
 
+def create_steering_control_angle_3_mock(packer, apply_torque, steer_req):
+  set_3 = 3 if steer_req else 2
+  values = {
+    "LKAS_Output": apply_torque * 100,
+    "LKAS_Request": steer_req,
+    "SET_3": set_3
+  }
+  return packer.make_can_msg("ES_LKAS_ANGLE", 0, values)
+
+
 
 
 def create_steering_status(packer):

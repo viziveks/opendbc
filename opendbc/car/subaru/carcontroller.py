@@ -42,9 +42,8 @@ class CarController(CarControllerBase):
         if not CC.latActive:
           apply_steer = CS.out.steeringAngleDeg
 
-        # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
-        # create_steering_control_angle()
-        can_sends.append(subarucan.create_steering_control_angle(self.packer, apply_steer, CC.latActive))
+        # JW-TODO: make this not break legacy stuff
+        can_sends.append(subarucan.create_steering_control_angle_3_mock(self.packer, apply_steer, CC.latActive))
         self.apply_steer_last = apply_steer
 
       # torque-based steering
