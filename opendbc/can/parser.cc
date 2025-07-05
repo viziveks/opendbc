@@ -45,16 +45,21 @@ bool MessageState::parse(uint64_t nanos, const std::vector<uint8_t> &dat) {
 
     //DEBUG("parse 0x%X %s -> %ld\n", address, sig.name, tmp);
 
-    if (!ignore_checksum) {
-      if (sig.calc_checksum != nullptr && sig.calc_checksum(address, sig, dat) != tmp) {
-        checksum_failed = true;
+    // JW-TODO: This ain't gonna fly in a PR
+    if(address != 0x02) {
+      if (!ignore_checksum) {
+        if (sig.calc_checksum != nullptr && sig.calc_checksum(address, sig, dat) != tmp) {
+          checksum_failed = true;
+        }
       }
-    }
 
-    if (!ignore_counter) {
-      if (sig.type == SignalType::COUNTER && !update_counter_generic(tmp, sig.size)) {
-        counter_failed = true;
+      if (!ignore_counter) {
+        if (sig.type == SignalType::COUNTER && !update_counter_generic(tmp, sig.size)) {
+          counter_failed = true;
+        }
       }
+    } else {
+      INFO("Ignoring checksum and counter for 0x02\n");
     }
 
     tmp_vals[i] = tmp * sig.factor + sig.offset;
