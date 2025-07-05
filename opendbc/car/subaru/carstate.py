@@ -68,7 +68,7 @@ class CarState(CarStateBase):
     # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
     if True or self.CP.flags & SubaruFlags.LKAS_ANGLE:
       try:
-        ret.steeringAngleDeg = cp_cam.vl["Steering"]["Steering_Angle"]
+        ret.steeringAngleDeg = cp.vl["Steering"]["Steering_Angle"]
       except Exception as e:
         # I'm just not 100% sure if this is the right key. but don't want to crash if it doesn't exist
         pass
