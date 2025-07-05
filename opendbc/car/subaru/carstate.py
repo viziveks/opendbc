@@ -70,7 +70,8 @@ class CarState(CarStateBase):
       try:
         ret.steeringAngleDeg = cp.vl["Steering"]["Steering_Angle"]
       except Exception as e:
-        # I'm just not 100% sure if this is the right key. but don't want to crash if it doesn't exist
+        # this should be easy to see
+        ret.steeringAngleDeg = -6.9420
         pass
     else:
       ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
@@ -187,6 +188,7 @@ class CarState(CarStateBase):
       # sig_address, frequency
       ("Dashlights", 10),
       ("Steering_Torque", 50),
+      ("Steering", 100),
       ("BodyInfo", 1),
       ("Brake_Pedal", 50),
     ]
