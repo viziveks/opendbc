@@ -238,11 +238,11 @@ class CarState(CarStateBase):
 
     try:
       return {
-        Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus.main, ignore_checksum=True),
-        Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_messages, CanBus.camera, ignore_checksum=True),
-        Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.pt], alt_messages, CanBus.alt, ignore_checksum=True)
+        Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus.main, True),
+        Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_messages, CanBus.camera, True),
+        Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.pt], alt_messages, CanBus.alt, True)
       }
-    except TypeError:
+    except Exception as e:
       return {
         Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus.main),
         Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_messages, CanBus.camera),
