@@ -48,14 +48,26 @@ unsigned int toyota_checksum(uint32_t address, const Signal &sig, const std::vec
   return s & 0xFF;
 }
 
+// Very similar logic to the one in common.cc's subaru_checksum. You'll need to modify in both
 unsigned int subaru_checksum(uint32_t address, const Signal &sig, const std::vector<uint8_t> &d) {
   unsigned int s = 0;
-  while (address) { s += address & 0xFF; address >>= 8; }
+    // work on a temp so we don’t destroy the original
+    uint32_t tmp = address;
+    while (tmp) { s += tmp & 0xFF; tmp >>= 8; }
 
-  // skip checksum in first byte
-  for (int i = 1; i < d.size(); i++) { s += d[i]; }
+  for (int i = 0; i < d.size(); i++) { 
+    if(address != 0x2 && i == 0) continue; // skip checksum byte-0 for everything but 0x2
+    if(address == 0x2 && i == 4) continue; // skip checksum byte-4 for 0x2
 
-  return s & 0xFF;
+    s += d[i]; 
+  }
+
+  if(address == 0x2) {
+    // 0x2 checksum is special, subtract the address
+    return (s - 0x2) & 0xFF; // 0x2 checksum is the sum mod 256 minus the address
+  } else {
+    return s & 0xFF; // all other checksums are just the sum mod 256
+  }
 }
 
 unsigned int chrysler_checksum(uint32_t address, const Signal &sig, const std::vector<uint8_t> &d) {
