@@ -148,7 +148,7 @@ class CAR(Platforms):
   )
   SUBARU_CROSSTREK_GEN_3 = SubaruPlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2024-25", "All")],
-    CarSpecs(mass=1529, wheelbase=2.5781, steerRatio=13.8),
+    CarSpecs(mass=1529, wheelbase=2.5781, steerRatio=13.5),
   )
   SUBARU_LEGACY = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Legacy 2020-22", "All", car_parts=CarParts.common([CarHarness.subaru_b]))],

@@ -56,7 +56,7 @@ bool MessageState::parse(uint64_t nanos, const std::vector<uint8_t> &dat) {
         counter_failed = true;
       }
     }
-  
+
     tmp_vals[i] = tmp * sig.factor + sig.offset;
   }
 

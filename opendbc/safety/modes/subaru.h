@@ -106,36 +106,20 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
 
   int addr = GET_ADDR(to_push);
 
-  // JW-TODO: If 2025 subaru crosstrek
-  if(true) {
-    if ((addr == MSG_SUBARU_Steering_Torque) && (bus == SUBARU_MAIN_BUS)) {
-      int torque_driver_new;
-      torque_driver_new = ((GET_BYTES(to_push, 0, 4) >> 16) & 0x7FFU);
-      torque_driver_new = -1 * to_signed(torque_driver_new, 11);
-      update_sample(&torque_driver, torque_driver_new);
-    } 
-    if ((addr == MSG_SUBARU_ES_LKAS_ANGLE) && (bus == SUBARU_CAM_BUS)) {
-      // Extract 17 bits starting at bit 40, big endian
-      int angle_raw = GET_BYTES(to_push, 5, 3) & 0x1FFFFU;
-      angle_raw = to_signed(angle_raw, 17);
-    
-      float angle_deg = angle_raw * -0.01f;
-    
-      update_sample(&angle_meas, angle_deg);
-    }
-  }
-  else {
-    if ((addr == MSG_SUBARU_Steering_Torque) && (bus == SUBARU_MAIN_BUS)) {
-      int torque_driver_new;
-      torque_driver_new = ((GET_BYTES(to_push, 0, 4) >> 16) & 0x7FFU);
-      torque_driver_new = -1 * to_signed(torque_driver_new, 11);
-      update_sample(&torque_driver, torque_driver_new);
+  if (subaru_lkas_angle && addr == MSG_SUBARU_ES_LKAS_ANGLE && bus == SUBARU_CAM_BUS) {
+    int raw_angle = GET_BYTES(to_push, 5, 3) & 0x1FFFFU;
+    raw_angle = to_signed(raw_angle, 17);
+    int angle_meas_new = ROUND(raw_angle * -1.0);  // convert to centidegrees
+    update_sample(&angle_meas, angle_meas_new);
 
-      int angle_meas_new = (GET_BYTES(to_push, 4, 2) & 0xFFFFU);
-      // convert Steering_Torque -> Steering_Angle to centidegrees, to match the ES_LKAS_ANGLE angle request units
-      angle_meas_new = ROUND(to_signed(angle_meas_new, 16) * -2.17);
-      update_sample(&angle_meas, angle_meas_new);
-    }
+  } else if (!subaru_lkas_angle && addr == MSG_SUBARU_Steering_Torque && bus == SUBARU_MAIN_BUS) {
+    int torque_driver_new = ((GET_BYTES(to_push, 0, 4) >> 16) & 0x7FFU);
+    torque_driver_new = -1 * to_signed(torque_driver_new, 11);
+    update_sample(&torque_driver, torque_driver_new);
+
+    int angle_meas_new = (GET_BYTES(to_push, 4, 2) & 0xFFFFU);
+    angle_meas_new = ROUND(to_signed(angle_meas_new, 16) * -2.17);
+    update_sample(&angle_meas, angle_meas_new);
   }
 
   // enter controls on rising edge of ACC, exit controls on ACC off

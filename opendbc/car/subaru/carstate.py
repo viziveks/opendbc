@@ -65,17 +65,7 @@ class CarState(CarStateBase):
     can_gear = int(cp_transmission.vl["Transmission"]["Gear"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
-    # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
-    if True or self.CP.flags & SubaruFlags.LKAS_ANGLE:
-      try:
-        ret.steeringAngleDeg = cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_Output"]
-      except Exception as e:
-        # this should be easy to see
-        ret.steeringAngleDeg = -6.9420
-        pass
-    else:
-      ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
-
+    ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
 
     if not (self.CP.flags & SubaruFlags.PREGLOBAL):
       # ideally we get this from the car, but unclear if it exists. diagnostic software doesn't even have it
@@ -234,17 +224,9 @@ class CarState(CarStateBase):
         ("Throttle_Hybrid", 40),
         ("Transmission", 100)
       ]
-    
-    # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
-    if True:
-      cam_messages += [
-        ("ES_LKAS_ANGLE", 50),
-      ]
 
     return {
-      Bus.pt:  CANParser(DBC[CP.carFingerprint][Bus.pt],  pt_messages,  CanBus.main),
+      Bus.pt: CANParser(DBC[CP.carFingerprint][Bus.pt], pt_messages, CanBus.main),
       Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_messages, CanBus.camera),
-      Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.pt], alt_messages, CanBus.alt),
+      Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.pt], alt_messages, CanBus.alt)
     }
-      
-
