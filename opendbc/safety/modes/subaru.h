@@ -123,7 +123,11 @@ static uint32_t subaru_compute_checksum(const CANPacket_t *to_push) {
     if (addr == MSG_SUBARU_Steering && i == 4) continue;
     checksum += (uint8_t)GET_BYTE(to_push, i);
   }
-  return checksum;
+  if(addr == MSG_SUBARU_Steering) {
+    return checksum - MSG_SUBARU_Steering;
+  } else {
+    return checksum;
+  }
 }
 
 
