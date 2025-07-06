@@ -70,9 +70,12 @@ class CarState(CarStateBase):
     angle = cp.vl["Steering_Torque"]["Steering_Angle"] if False else cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_Output"]
     ret.steeringAngleDeg = angle
 
-    if not (self.CP.flags & SubaruFlags.PREGLOBAL):
-      # ideally we get this from the car, but unclear if it exists. diagnostic software doesn't even have it
-      ret.steeringRateDeg = self.angle_rate_calulator.update(ret.steeringAngleDeg, cp.vl["Steering_Torque"]["COUNTER"])
+    ret.steeringRateDeg = self.angle_rate_calulator.update(ret.steeringAngleDeg, cp_cam.vl["ES_LKAS_ANGLE"]["COUNTER"])
+
+    if False:
+      if not (self.CP.flags & SubaruFlags.PREGLOBAL):
+        # ideally we get this from the car, but unclear if it exists. diagnostic software doesn't even have it
+        ret.steeringRateDeg = self.angle_rate_calulator.update(ret.steeringAngleDeg, cp.vl["Steering_Torque"]["COUNTER"])
 
     ret.steeringTorque = cp.vl["Steering_Torque"]["Steer_Torque_Sensor"]
     ret.steeringTorqueEps = cp.vl["Steering_Torque"]["Steer_Torque_Output"]
