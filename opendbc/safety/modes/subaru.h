@@ -124,8 +124,9 @@ static uint32_t subaru_compute_checksum(const CANPacket_t *to_push) {
     if (addr == MSG_SUBARU_Steering && i == 4) continue;
     checksum += (uint8_t)GET_BYTE(to_push, i);
   }
+
   if(addr == MSG_SUBARU_Steering) {
-    return checksum - MSG_SUBARU_Steering;
+    return (checksum - MSG_SUBARU_Steering) & 0xFF;
   } else {
     return checksum;
   }
@@ -142,7 +143,7 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
     // Steering_Angle is 16 bits, big-endian, scale 0.1 deg/bit, right-turn negative
     int16_t raw = GET_BYTES(to_push, 0, 2);        // bytes 0-1
     raw = to_signed(raw, 16);
-    int angle_meas_new = ROUND(raw * 10.0);        // 0.1 deg → centideg
+    int angle_meas_new = ROUND(raw * 10.0);        // 0.1 deg -> centideg
     update_sample(&angle_meas, angle_meas_new);
 
   } else if (!subaru_lkas_angle && addr == MSG_SUBARU_Steering_Torque && bus == SUBARU_MAIN_BUS) {
