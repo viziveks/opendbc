@@ -320,7 +320,8 @@ static safety_config subaru_init(uint16_t param) {
   };
 
   static RxCheck subaru_lkas_angle_rx_checks[] = {
-    SUBARU_LKAS_ANGLE_RX_CHECKS(SUBARU_ALT_BUS)
+    // JW-TODO: Make this 1 for CT and 2 for everything else
+    SUBARU_LKAS_ANGLE_RX_CHECKS(1)
   };
 
   const uint16_t SUBARU_PARAM_GEN2 = 1;
