@@ -68,7 +68,7 @@ class CarState(CarStateBase):
     # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
     if True or self.CP.flags & SubaruFlags.LKAS_ANGLE:
       try:
-        ret.steeringAngleDeg = cp.vl["Steering"]["Steering_Angle"]
+        ret.steeringAngleDeg = cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_Output"]
       except Exception as e:
         # this should be easy to see
         ret.steeringAngleDeg = -6.9420
@@ -188,7 +188,6 @@ class CarState(CarStateBase):
       # sig_address, frequency
       ("Dashlights", 10),
       ("Steering_Torque", 50),
-      ("Steering", 100),
       ("BodyInfo", 1),
       ("Brake_Pedal", 50),
     ]
@@ -235,11 +234,17 @@ class CarState(CarStateBase):
         ("Throttle_Hybrid", 40),
         ("Transmission", 100)
       ]
+    
+    # JW-TODO: Add check for if this is a Crosstrek 2024-5 then do this, otherwise send the original
+    if True:
+      cam_messages += [
+        ("ES_LKAS_ANGLE", 50),
+      ]
 
     return {
       Bus.pt:  CANParser(DBC[CP.carFingerprint][Bus.pt],  pt_messages,  CanBus.main),
-      Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.cam], cam_messages, CanBus.camera),
-      Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.alt], alt_messages, CanBus.alt),
+      Bus.cam: CANParser(DBC[CP.carFingerprint][Bus.pt], cam_messages, CanBus.camera),
+      Bus.alt: CANParser(DBC[CP.carFingerprint][Bus.pt], alt_messages, CanBus.alt),
     }
       
 
