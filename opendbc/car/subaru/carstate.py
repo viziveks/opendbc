@@ -22,7 +22,7 @@ class CarState(CarStateBase):
     cp_alt = can_parsers[Bus.alt]
     ret = structs.CarState()
 
-    throttle_msg = cp.vl["Throttle"] if not (self.CP.flags & SubaruFlags.HYBRID) else cp_alt.vl["Throttle_Hybrid"]
+    throttle_msg = cp.vl["Throttle"] # if not (self.CP.flags & SubaruFlags.HYBRID) else cp_alt.vl["Throttle_Hybrid"]
     ret.gas = throttle_msg["Throttle_Pedal"] / 255.
 
     ret.gasPressed = ret.gas > 1e-5
@@ -65,7 +65,7 @@ class CarState(CarStateBase):
       ret.leftBlindspot = (cp.vl["BSD_RCTA"]["L_ADJACENT"] == 1) or (cp.vl["BSD_RCTA"]["L_APPROACHING"] == 1)
       ret.rightBlindspot = (cp.vl["BSD_RCTA"]["R_ADJACENT"] == 1) or (cp.vl["BSD_RCTA"]["R_APPROACHING"] == 1)
 
-    cp_transmission = cp_alt if self.CP.flags & SubaruFlags.HYBRID else cp
+    cp_transmission = cp # cp_alt if self.CP.flags & SubaruFlags.HYBRID else cp
     can_gear = int(cp_transmission.vl["Transmission"]["Gear"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
@@ -169,8 +169,9 @@ class CarState(CarStateBase):
 
     if not (CP.flags & SubaruFlags.HYBRID):
       messages += [
-        ("ES_Distance", 20),
-        ("ES_Status", 20)
+        # JW-TODO: These were 20, but I want them less often
+        ("ES_Distance", 10),
+        ("ES_Status", 10)
       ]
 
     return messages
