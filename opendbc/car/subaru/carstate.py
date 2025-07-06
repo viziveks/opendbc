@@ -29,7 +29,9 @@ class CarState(CarStateBase):
     if self.CP.flags & SubaruFlags.PREGLOBAL:
       ret.brakePressed = cp.vl["Brake_Pedal"]["Brake_Pedal"] > 0
     else:
-      cp_brakes = cp_alt if self.CP.flags & SubaruFlags.GLOBAL_GEN2 else cp
+      # JW-TODO: Fix this
+      cp_brakes = cp
+      # cp_brakes = cp_alt if self.CP.flags & SubaruFlags.GLOBAL_GEN2 else cp
       ret.brakePressed = cp_brakes.vl["Brake_Status"]["Brake"] == 1
 
     cp_es_distance = cp_alt if self.CP.flags & (SubaruFlags.GLOBAL_GEN2 | SubaruFlags.HYBRID) else cp_cam
@@ -42,7 +44,9 @@ class CarState(CarStateBase):
       else:
         ret.accFaulted = eyesight_fault
 
-    cp_wheels = cp_alt if self.CP.flags & SubaruFlags.GLOBAL_GEN2 else cp
+    # JW-TODO: Fix this
+    cp_wheels = cp
+    # cp_wheels = cp_alt if self.CP.flags & SubaruFlags.GLOBAL_GEN2 else cp
     ret.wheelSpeeds = self.get_wheel_speeds(
       cp_wheels.vl["Wheel_Speeds"]["FL"],
       cp_wheels.vl["Wheel_Speeds"]["FR"],
