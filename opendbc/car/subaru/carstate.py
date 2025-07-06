@@ -189,7 +189,9 @@ class CarState(CarStateBase):
       ("Steering_Torque", 50),
       ("BodyInfo", 1),
       ("Brake_Pedal", 50),
-      ("Steering", 100)
+      ("Steering", 100),
+      ("Wheel_Speeds", 50),
+      ("Brake_Status", 50),
     ]
 
     if not (CP.flags & SubaruFlags.HYBRID):
