@@ -19,6 +19,8 @@
     .has_steer_req_tolerance = true,                                                  \
   }
 
+#define MSG_SUBARU_Steering            0x02
+
 #define MSG_SUBARU_Brake_Status          0x13c
 #define MSG_SUBARU_CruiseControl         0x240
 #define MSG_SUBARU_Throttle              0x40
@@ -72,33 +74,58 @@
   {.msg = {{MSG_SUBARU_CruiseControl,   alt_bus,         8, .max_counter = 15U, .frequency = 20U}, { 0 }, { 0 }}},  \
 
 #define SUBARU_LKAS_ANGLE_RX_CHECKS(alt_bus)                                                                            \
-  {.msg = {{MSG_SUBARU_Throttle,        SUBARU_MAIN_BUS, 8, .max_counter = 15U, .frequency = 100U}, { 0 }, { 0 }}}, \
-  {.msg = {{MSG_SUBARU_Steering_Torque, SUBARU_MAIN_BUS, 8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},  \
-  {.msg = {{MSG_SUBARU_Wheel_Speeds,    alt_bus,         8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},  \
-  {.msg = {{MSG_SUBARU_Brake_Status,    alt_bus,         8, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},  \
-  {.msg = {{MSG_SUBARU_ES_DashStatus,   SUBARU_CAM_BUS,  8, .max_counter = 15U, .frequency = 20U}, { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_Throttle,        SUBARU_MAIN_BUS, 8, .max_counter = 15U, .frequency = 100U}, { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_Steering_Torque, SUBARU_MAIN_BUS, 8, .max_counter = 15U, .frequency = 50U},  { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_Wheel_Speeds,    alt_bus,         8, .max_counter = 15U, .frequency = 50U},  { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_Brake_Status,    alt_bus,         8, .max_counter = 15U, .frequency = 50U},  { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_ES_DashStatus,   SUBARU_CAM_BUS,  8, .max_counter = 15U, .frequency = 20U},  { 0 }, { 0 }}},  \
+  {.msg = {{MSG_SUBARU_Steering,        SUBARU_MAIN_BUS, 8, .max_counter = 7U,  .frequency = 100U },{ 0 }, { 0 }}},  \
 
 static bool subaru_gen2 = false;
 static bool subaru_longitudinal = false;
 static bool subaru_lkas_angle = false;
 
+// 1.  Return the right checksum byte
 static uint32_t subaru_get_checksum(const CANPacket_t *to_push) {
+  int addr = GET_ADDR(to_push);
+
+  // Because of course, Subaru has a different checksum byte for the steering message
+  if (addr == MSG_SUBARU_Steering) {
+    // CHECKSUM is 32|8@1+  →  byte index 4
+    return (uint8_t)GET_BYTE(to_push, 4);
+  }
+
+  // all other Subaru frames use byte-0
   return (uint8_t)GET_BYTE(to_push, 0);
 }
 
 static uint8_t subaru_get_counter(const CANPacket_t *to_push) {
+  int addr = GET_ADDR(to_push);
+
+  if (addr == MSG_SUBARU_Steering) {
+    // COUNTER is bits 1-3 of byte 3  (25|3@1+ in the DBC)
+    return (uint8_t)((GET_BYTE(to_push, 3) >> 1) & 0x7U);
+  }
+
+  // All the other Subaru frames keep their counter in byte-1 low-nibble
   return (uint8_t)(GET_BYTE(to_push, 1) & 0xFU);
 }
 
 static uint32_t subaru_compute_checksum(const CANPacket_t *to_push) {
   int addr = GET_ADDR(to_push);
-  int len = GET_LEN(to_push);
-  uint8_t checksum = (uint8_t)(addr) + (uint8_t)((unsigned int)(addr) >> 8U);
-  for (int i = 1; i < len; i++) {
+  int len  = GET_LEN(to_push);
+
+  uint8_t checksum = (uint8_t)addr + (uint8_t)(addr >> 8);
+
+  for (int i = 0; i < len; i++) {
+    // MSG_SUBARU_Steering has the checksum in byte 4, all other messages have it in byte 0
+    if (addr != MSG_SUBARU_Steering && i == 0) continue;
+    if (addr == MSG_SUBARU_Steering && i == 4) continue;
     checksum += (uint8_t)GET_BYTE(to_push, i);
   }
   return checksum;
 }
+
 
 static void subaru_rx_hook(const CANPacket_t *to_push) {
   const int bus = GET_BUS(to_push);
@@ -106,10 +133,11 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
 
   int addr = GET_ADDR(to_push);
 
-  if (subaru_lkas_angle && addr == MSG_SUBARU_ES_LKAS_ANGLE && bus == SUBARU_CAM_BUS) {
-    int raw_angle = GET_BYTES(to_push, 5, 3) & 0x1FFFFU;
-    raw_angle = to_signed(raw_angle, 17);
-    int angle_meas_new = ROUND(raw_angle * -1.0);  // raw value is negative centidegrees
+  if (subaru_lkas_angle && addr == MSG_SUBARU_Steering && bus == SUBARU_MAIN_BUS) {
+    // Steering_Angle is 16 bits, big-endian, scale 0.1 deg/bit, right-turn negative
+    int16_t raw = GET_BYTES(to_push, 0, 2);        // bytes 0-1
+    raw = to_signed(raw, 16);
+    int angle_meas_new = ROUND(raw * 10.0);        // 0.1 deg → centideg
     update_sample(&angle_meas, angle_meas_new);
 
   } else if (!subaru_lkas_angle && addr == MSG_SUBARU_Steering_Torque && bus == SUBARU_MAIN_BUS) {

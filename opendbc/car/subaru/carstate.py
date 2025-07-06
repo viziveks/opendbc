@@ -67,10 +67,13 @@ class CarState(CarStateBase):
 
     # JW-TODO: Specific to CT 2025
     #add a change?
-    angle = cp.vl["Steering_Torque"]["Steering_Angle"] if False else cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_Output"]
-    ret.steeringAngleDeg = angle
+    # 1. pull angle from the new message
+    angle = cp.vl["Steering"]["Steering_Angle"]   # right-turn negative, same units as before
+    ret.steeringAngleDeg = angle                 
 
-    ret.steeringRateDeg = self.angle_rate_calulator.update(ret.steeringAngleDeg, cp_cam.vl["ES_LKAS_ANGLE"]["COUNTER"])
+    # 2. feed the **counter**, not the angle, to the rate filter
+    counter = cp.vl["Steering"]["COUNTER"]        # field must exist in your DBC
+    ret.steeringRateDeg = self.angle_rate_calulator.update(ret.steeringAngleDeg, counter)
 
     if False:
       if not (self.CP.flags & SubaruFlags.PREGLOBAL):
@@ -186,6 +189,7 @@ class CarState(CarStateBase):
       ("Steering_Torque", 50),
       ("BodyInfo", 1),
       ("Brake_Pedal", 50),
+      ("Steering", 100)
     ]
 
     if not (CP.flags & SubaruFlags.HYBRID):
@@ -219,10 +223,6 @@ class CarState(CarStateBase):
 
       if CP.flags & SubaruFlags.SEND_INFOTAINMENT:
         cam_messages.append(("ES_Infotainment", 10))
-
-    cam_messages += [
-      ("ES_LKAS_ANGLE", 50),
-    ]
 
     alt_messages = []
     if CP.flags & SubaruFlags.GLOBAL_GEN2:
