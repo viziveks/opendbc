@@ -66,6 +66,7 @@ class CarState(CarStateBase):
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
     # JW-TODO: Specific to CT 2025
+    #add a change?
     angle = cp.vl["Steering_Torque"]["Steering_Angle"] if True else cp_cam.vl["ES_LKAS_State"]["LKAS_Angle"]
     ret.steeringAngleDeg = angle
 
