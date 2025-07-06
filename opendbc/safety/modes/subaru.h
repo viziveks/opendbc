@@ -91,7 +91,7 @@ static uint32_t subaru_get_checksum(const CANPacket_t *to_push) {
 
   // Because of course, Subaru has a different checksum byte for the steering message
   if (addr == MSG_SUBARU_Steering) {
-    // CHECKSUM is 32|8@1+  →  byte index 4
+    // CHECKSUM is 32|8@1+  ->  byte index 4
     return (uint8_t)GET_BYTE(to_push, 4);
   }
 
@@ -111,6 +111,7 @@ static uint8_t subaru_get_counter(const CANPacket_t *to_push) {
   return (uint8_t)(GET_BYTE(to_push, 1) & 0xFU);
 }
 
+// Very similar logic to the one in common.cc's subaru_checksum. You'll need to modify in both
 static uint32_t subaru_compute_checksum(const CANPacket_t *to_push) {
   int addr = GET_ADDR(to_push);
   int len  = GET_LEN(to_push);
