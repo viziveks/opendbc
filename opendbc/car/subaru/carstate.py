@@ -203,6 +203,7 @@ class CarState(CarStateBase):
     if CP.enableBsm:
       pt_messages.append(("BSD_RCTA", 17))
 
+    # not ct
     if not (CP.flags & SubaruFlags.PREGLOBAL):
       if not (CP.flags & SubaruFlags.GLOBAL_GEN2):
         pt_messages += CarState.get_common_global_body_messages(CP)
