@@ -148,8 +148,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_common_global_body_messages(CP):
     messages = [
-      ("Wheel_Speeds", 1),
-      ("Brake_Status", 1),
+      ("Wheel_Speeds", 50),
+      ("Brake_Status", 50),
     ]
 
     if not (CP.flags & SubaruFlags.HYBRID):
@@ -165,8 +165,8 @@ class CarState(CarStateBase):
 
     if not (CP.flags & SubaruFlags.HYBRID):
       messages += [
-        ("ES_Distance", 1),
-        ("ES_Status", 1)
+        ("ES_Distance", 20),
+        ("ES_Status", 20)
       ]
 
     return messages
@@ -194,8 +194,8 @@ class CarState(CarStateBase):
 
     if not (CP.flags & SubaruFlags.HYBRID):
       pt_messages += [
-        ("Throttle", 1),
-        ("Transmission", 1)
+        ("Throttle", 100),
+        ("Transmission", 100)
       ]
 
     if CP.enableBsm:
@@ -210,7 +210,7 @@ class CarState(CarStateBase):
     if CP.flags & SubaruFlags.PREGLOBAL:
       cam_messages = [
         ("ES_DashStatus", 20),
-        ("ES_Distance", 1),
+        ("ES_Distance", 20),
       ]
     else:
       cam_messages = [
@@ -232,7 +232,7 @@ class CarState(CarStateBase):
     if CP.flags & SubaruFlags.HYBRID:
       alt_messages += [
         ("Throttle_Hybrid", 40),
-        ("Transmission", 1)
+        ("Transmission", 100)
       ]
 
     return {
