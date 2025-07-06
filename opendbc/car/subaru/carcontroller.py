@@ -42,9 +42,8 @@ class CarController(CarControllerBase):
         if not CC.latActive:
           apply_steer = CS.out.steeringAngleDeg
 
-        # JW-TODO: do i need to multiply by 100?
-        can_sends.append(subarucan.create_steering_control_angle(self.packer, int(round(apply_steer * 100)), CC.latActive))
-        self.apply_steer_last = apply_steer * 100  # store centideg version
+        can_sends.append(subarucan.create_steering_control_angle(self.packer, apply_steer, CC.latActive))
+        self.apply_steer_last = apply_steer
 
       # torque-based steering
       else:
