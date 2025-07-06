@@ -65,7 +65,9 @@ class CarState(CarStateBase):
     can_gear = int(cp_transmission.vl["Transmission"]["Gear"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
 
-    ret.steeringAngleDeg = cp.vl["Steering_Torque"]["Steering_Angle"]
+    # JW-TODO: Specific to CT 2025
+    angle = cp.vl["Steering_Torque"]["Steering_Angle"] if True else cp_cam.vl["ES_LKAS_State"]["LKAS_Angle"]
+    ret.steeringAngleDeg = angle
 
     if not (self.CP.flags & SubaruFlags.PREGLOBAL):
       # ideally we get this from the car, but unclear if it exists. diagnostic software doesn't even have it
