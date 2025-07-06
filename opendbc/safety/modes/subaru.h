@@ -48,7 +48,7 @@
 
 // JW-TODO: lkas_msg may need to be on 0, idk
 #define SUBARU_BASE_TX_MSGS(alt_bus, lkas_msg) \
-  {lkas_msg,                     SUBARU_CAM_BUS, 8, .check_relay = true},  \
+  {lkas_msg,                     SUBARU_MAIN_BUS, 8, .check_relay = true},  \
   {MSG_SUBARU_ES_DashStatus,     SUBARU_MAIN_BUS, 8, .check_relay = true},  \
   {MSG_SUBARU_ES_LKAS_State,     SUBARU_MAIN_BUS, 8, .check_relay = true},  \
   {MSG_SUBARU_ES_Infotainment,   SUBARU_MAIN_BUS, 8, .check_relay = true},  \
@@ -144,7 +144,7 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
     // Steering_Angle is 16 bits, big-endian, scale 0.1 deg/bit, right-turn negative
     int16_t raw = GET_BYTES(to_push, 0, 2);        // bytes 0-1
     raw = to_signed(raw, 16);
-    int angle_meas_new = ROUND(raw * 10.0);        // 0.1 deg -> centideg
+    int angle_meas_new = ROUND(raw);
     update_sample(&angle_meas, angle_meas_new);
 
   } else if (!subaru_lkas_angle && addr == MSG_SUBARU_Steering_Torque && bus == SUBARU_MAIN_BUS) {
