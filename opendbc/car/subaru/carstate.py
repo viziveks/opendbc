@@ -148,8 +148,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_common_global_body_messages(CP):
     messages = [
-      ("Wheel_Speeds", 50),
-      ("Brake_Status", 50),
+      # ("Wheel_Speeds", 50),
+      # ("Brake_Status", 50),
     ]
 
     if not (CP.flags & SubaruFlags.HYBRID):
