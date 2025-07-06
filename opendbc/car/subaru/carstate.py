@@ -67,7 +67,7 @@ class CarState(CarStateBase):
 
     # JW-TODO: Specific to CT 2025
     #add a change?
-    angle = cp.vl["Steering_Torque"]["Steering_Angle"] if True else cp_cam.vl["ES_LKAS_State"]["LKAS_Angle"]
+    angle = cp.vl["Steering_Torque"]["Steering_Angle"] if False else cp_cam.vl["ES_LKAS_ANGLE"]["LKAS_Output"]
     ret.steeringAngleDeg = angle
 
     if not (self.CP.flags & SubaruFlags.PREGLOBAL):
@@ -216,6 +216,10 @@ class CarState(CarStateBase):
 
       if CP.flags & SubaruFlags.SEND_INFOTAINMENT:
         cam_messages.append(("ES_Infotainment", 10))
+
+    cam_messages += [
+      ("ES_LKAS_ANGLE", 50),
+    ]
 
     alt_messages = []
     if CP.flags & SubaruFlags.GLOBAL_GEN2:

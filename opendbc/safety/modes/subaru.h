@@ -109,7 +109,7 @@ static void subaru_rx_hook(const CANPacket_t *to_push) {
   if (subaru_lkas_angle && addr == MSG_SUBARU_ES_LKAS_ANGLE && bus == SUBARU_CAM_BUS) {
     int raw_angle = GET_BYTES(to_push, 5, 3) & 0x1FFFFU;
     raw_angle = to_signed(raw_angle, 17);
-    int angle_meas_new = ROUND(raw_angle * -1.0);  // convert to centidegrees
+    int angle_meas_new = ROUND(raw_angle * -1.0);  // raw value is negative centidegrees
     update_sample(&angle_meas, angle_meas_new);
 
   } else if (!subaru_lkas_angle && addr == MSG_SUBARU_Steering_Torque && bus == SUBARU_MAIN_BUS) {
