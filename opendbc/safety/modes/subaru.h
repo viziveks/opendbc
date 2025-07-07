@@ -44,6 +44,9 @@
 #define SUBARU_ALT_BUS  1
 #define SUBARU_CAM_BUS  2
 
+
+// From: https://discord.com/channels/469524606043160576/909859975705268275/1389671944722583642
+// .check_relay - That throws an error if that is true and the ecu transmits that address is n the bus. I don’t think that is what you are looking for. I’m trying to determine proper coding to determine if an ecu is disabled by detecting a message is not being transmitted.
 #define SUBARU_BASE_TX_MSGS(alt_bus, lkas_msg) \
   {lkas_msg,                     SUBARU_MAIN_BUS, 8, .check_relay = true},  \
   {MSG_SUBARU_ES_DashStatus,     SUBARU_MAIN_BUS, 8, .check_relay = true},  \
