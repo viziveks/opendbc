@@ -111,9 +111,7 @@ class CarInterface(CarInterfaceBase):
     # ret.alphaLongitudinalAvailable = not (ret.flags & (SubaruFlags.GLOBAL_GEN2 | SubaruFlags.PREGLOBAL |
     #                                                    SubaruFlags.LKAS_ANGLE | SubaruFlags.HYBRID))
 
-    ret.alphaLongitudinalAvailable = not (ret.flags & (SubaruFlags.GLOBAL_GEN2 | 
-                                                       SubaruFlags.PREGLOBAL |
-                                                       SubaruFlags.HYBRID))
+    ret.alphaLongitudinalAvailable = True
     
     ret.openpilotLongitudinalControl = alpha_long and ret.alphaLongitudinalAvailable
 
