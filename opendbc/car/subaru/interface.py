@@ -65,12 +65,11 @@ class CarInterface(CarInterfaceBase):
       ret.dashcamOnly = False
       ret.steerActuatorDelay = 0.1  # end-to-end angle controller
       ret.lateralTuning.init('pid')
-      ret.lateralTuning.pid.kf = 0.00003
+      ret.lateralTuning.pid.kf = 0.00004
       ret.lateralTuning.pid.kpBP = [0., 20.]
       ret.lateralTuning.pid.kiBP = [0., 20.]
-      ret.lateralTuning.pid.kpV = [0.0025, 0.1]
-      ret.lateralTuning.pid.kiV = [0.00025, 0.01]
-      ret.safetyConfigs[0].safetyParam |= SubaruSafetyFlags.LONG.value
+      ret.lateralTuning.pid.kpV = [0.0025, 0.07]
+      ret.lateralTuning.pid.kiV = [0.0002, 0.008]
 
     elif candidate == CAR.SUBARU_IMPREZA:
       ret.steerActuatorDelay = 0.4  # end-to-end angle controller
@@ -109,10 +108,8 @@ class CarInterface(CarInterfaceBase):
     else:
       raise ValueError(f"unknown car: {candidate}")
 
-    # ret.alphaLongitudinalAvailable = not (ret.flags & (SubaruFlags.GLOBAL_GEN2 | SubaruFlags.PREGLOBAL |
-    #                                                    SubaruFlags.LKAS_ANGLE | SubaruFlags.HYBRID))
-
-    ret.alphaLongitudinalAvailable = True
+    ret.alphaLongitudinalAvailable = not (ret.flags & (SubaruFlags.GLOBAL_GEN2 | SubaruFlags.PREGLOBAL |
+                                                       SubaruFlags.LKAS_ANGLE | SubaruFlags.HYBRID))
     
     ret.openpilotLongitudinalControl = alpha_long and ret.alphaLongitudinalAvailable
 
