@@ -70,6 +70,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiBP = [0., 20.]
       ret.lateralTuning.pid.kpV = [0.0025, 0.1]
       ret.lateralTuning.pid.kiV = [0.00025, 0.01]
+      ret.safetyConfigs[0].safetyParam |= SubaruSafetyFlags.LONG.value
 
     elif candidate == CAR.SUBARU_IMPREZA:
       ret.steerActuatorDelay = 0.4  # end-to-end angle controller
