@@ -236,6 +236,13 @@ class CAR(Platforms):
     SUBARU_OUTBACK.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
+  # OUTBACK 2024 - Viziveks
+  SUBARU_OUTBACK_2024 = SubaruGen2PlatformConfig(
+    [SubaruCarDocs("Subaru Outback 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
+    SUBARU_CROSSTREK_GEN3.specs,
+    CarSpecs(mass=1836, wheelbase=2.70, steerRatio=13),
+    flags=SubaruFlags.LKAS_ANGLE,
+  )
   SUBARU_ASCENT_2023 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Ascent 2023", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
     SUBARU_ASCENT.specs,
