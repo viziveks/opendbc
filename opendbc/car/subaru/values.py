@@ -142,6 +142,10 @@ class CAR(Platforms):
     [SubaruCarDocs("Subaru Outback 2020-22", "All", car_parts=CarParts.common([CarHarness.subaru_b]))],
     CarSpecs(mass=1568, wheelbase=2.67, steerRatio=17),
   )
+  SUBARU_OUTBACK_24 = SubaruGen2PlatformConfig(
+    [SubaruCarDocs("Subaru Outback 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
+    CarSpecs(mass=1836, wheelbase=2.7, steerRatio=13),
+  )
   SUBARU_CROSSTREK = SubaruPlatformConfig(
     [SubaruCarDocs("Subaru Crosstrek 2020-23", "All")],
     CarSpecs(mass=1836, wheelbase=2.7, steerRatio=13),
@@ -221,6 +225,11 @@ class CAR(Platforms):
   SUBARU_OUTBACK_2023 = SubaruGen2PlatformConfig(
     [SubaruCarDocs("Subaru Outback 2023", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
     SUBARU_OUTBACK.specs,
+    flags=SubaruFlags.LKAS_ANGLE,
+  )
+  SUBARU_OUTBACK_2024 = SubaruPlatformConfig(
+    [SubaruCarDocs("Subaru Outback 2024", "All", car_parts=CarParts.common([CarHarness.subaru_d]))],
+    SUBARU_OUTBACK_24.specs,
     flags=SubaruFlags.LKAS_ANGLE,
   )
   SUBARU_ASCENT_2023 = SubaruGen2PlatformConfig(
